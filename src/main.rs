@@ -5,7 +5,9 @@ mod logger;
 mod config;
 use logger::logger;
 use std::process::Command;
+//use std::str::FromStr;
 use std::{thread, time};
+use std::path::PathBuf;
 
 fn main() {
     //pgrep is used to check if any programs in the lsit are currentl running#
@@ -19,9 +21,11 @@ fn main() {
     let mut conf = config::ConfigFile::default(); //get the config
     conf.get_config("/etc/"); //this function should be modified to return Result<String>
 
-    let mut log_path: String= conf.log_path.clone();
-    log_path.push_str(CONFIG_FILE);
-    let log_file: &str = log_path.as_str();
+    let mut log_file_pb = PathBuf::from(conf.log_path);
+    log_file_pb.push(CONFIG_FILE);
+    let log_file = log_file_pb.as_os_str();
+
+    println!("Log file = {:?}", log_file);
 
 
     if conf.programs_list.len() == 0{
@@ -59,6 +63,11 @@ fn main() {
     if suspend_ok{
         logger(log_file, "systemctl suspend");
         println!("systemctl suspend");
+        let mut sh_command = Command::new("systemctl");
+        sh_command.arg("suspend");
+        let sh_output = sh_command.output().expect("failed execute systemctl suspend"); //handle this better - log it! (Result)
+        let output = String::from_utf8(sh_output.stdout).unwrap(); // to do - handle this error
+        logger(log_file, output.as_str());
     }
     else{
         logger(log_file, "Conditions not met to suspend system");

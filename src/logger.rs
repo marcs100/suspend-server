@@ -1,8 +1,9 @@
 use chrono::Local;
 use std::fs::File;
 use std::io::Write;
+use std::ffi::OsStr;
 
-pub fn logger(log_file: &str, message: &str) {
+pub fn logger(log_file: &OsStr, message: &str) {
     let mut log = File::options()
         .append(true)
         .create(true)
