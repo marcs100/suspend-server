@@ -53,7 +53,7 @@ fn main() {
                 println!("{} is running, can't suspend", prog);
                 suspend_ok = false;
                 //sleep for 15 mins
-                let duration = time::Duration::from_secs(10);
+                let duration = time::Duration::from_secs(900); //wait 15 mins
                 thread::sleep(duration);
                 break;
             }
