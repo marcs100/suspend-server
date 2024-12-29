@@ -1,0 +1,5 @@
+[Unit]
+Description="suspend server (after checks)"
+
+[Service]
+ExecStart=/home/marc/bin/suspend-server
