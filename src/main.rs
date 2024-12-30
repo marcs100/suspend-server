@@ -44,6 +44,7 @@ fn main() {
             logger(log_file, format!("Checking for {}",prog).as_str());
             println!("Checking for {}", prog);
             let mut sh_command = Command::new("pgrep");
+            sh_command.arg("-f");
             sh_command.arg(prog);
             let sh_output = sh_command.output().expect("failed to process pgrep"); //handle this better - log it! (Result)
             let progs = String::from_utf8(sh_output.stdout).unwrap(); // to do - handle this error
