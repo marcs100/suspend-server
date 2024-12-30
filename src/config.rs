@@ -13,7 +13,8 @@ pub struct ConfigFile{
 impl ConfigFile{
     pub fn get_config(&mut self, conf_path: &str){
         let mut file_path = PathBuf::from(conf_path);
-        file_path.push("suspend-server.conf");
+        const CONFIG_FILE: &str = "suspend-server.conf";
+        file_path.push(CONFIG_FILE);
         //println!("conf file = {:?}",file_path);
         let contents = ConfigFile::read_config_file(file_path);
         let lines = contents.split("\n");

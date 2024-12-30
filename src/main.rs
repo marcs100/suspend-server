@@ -14,7 +14,7 @@ fn main() {
     //let progs_check = ["brave", "borg", "borgmatic"]; //put this in a config file
     let mut suspend_ok: bool = false;
     const MAX_TRIES: i32 = 10;
-    const CONFIG_FILE: &str = "suspend-server.conf";
+    const LOG_FILE: &str = "suspend-server.log";
     let mut tries: i32 = 0;
 
     //config file
@@ -22,7 +22,7 @@ fn main() {
     conf.get_config("/etc/"); //this function should be modified to return Result<String>
 
     let mut log_file_pb = PathBuf::from(conf.log_path);
-    log_file_pb.push(CONFIG_FILE);
+    log_file_pb.push(LOG_FILE);
     let log_file = log_file_pb.as_os_str();
 
     println!("Log file = {:?}", log_file);
