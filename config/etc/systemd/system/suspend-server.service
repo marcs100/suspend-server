@@ -3,3 +3,4 @@ Description="suspend server (after checks)"
 
 [Service]
 ExecStart=/home/marc/bin/suspend-server
+Restart=no
