@@ -1,6 +1,8 @@
 /* Suspend server, first checking if there are any specific prgrams running
 sleep 15 mins if program is runnng. Max tries = 10 before giving up.
-This program can be called by a systemd timer to be run at a specific time e.g. midnight.*/
+This program can be called by a systemd timer to be run at a specific time e.g. midnight.
+I am currenttly using cronie to run this!!!!!!!*/
+
 mod logger;
 mod config;
 use logger::logger;
@@ -26,7 +28,6 @@ fn main() {
     let log_file = log_file_pb.as_os_str();
 
     println!("Log file = {:?}", log_file);
-
 
     if conf.programs_list.len() == 0{
         logger(log_file,"Error in config file - no programs to check");
