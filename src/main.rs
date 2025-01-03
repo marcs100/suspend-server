@@ -21,7 +21,10 @@ fn main() {
 
     //config file
     let mut conf = config::ConfigFile::default(); //get the config
-    conf.get_config("/etc/"); //this function should be modified to return Result<String>
+    match conf.get_config("/etc/"){
+        Ok(..) => (),
+        Err(err) => {panic!("{}", format!("Error in config file {}",err));}
+    }
 
     let mut log_file_pb = PathBuf::from(conf.log_path);
     log_file_pb.push(LOG_FILE);
