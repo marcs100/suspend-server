@@ -34,8 +34,7 @@ fn main() {
 
     if conf.programs_list.len() == 0{
         logger(log_file,"Error in config file - no programs to check");
-        println!("Error in config file - no programs to check");
-        return;
+        panic!("Error in config file - no programs to check");
     }
 
     let progs_iter = conf.programs_list.split(","); //get iterator for programs to check
