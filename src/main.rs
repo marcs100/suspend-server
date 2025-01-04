@@ -3,8 +3,8 @@ sleep 15 mins if program is runnng. Max tries = 10 before giving up.
 This program can be called by a systemd timer to be run at a specific time e.g. midnight.
 I am currenttly using cronie to run this!!!!!!!*/
 
-mod logger;
 mod config;
+mod logger;
 use logger::logger;
 use std::process::Command;
 //use std::str::FromStr;
@@ -15,9 +15,8 @@ fn main() {
     //pgrep is used to check if any programs in the lsit are currentl running#
     //let progs_check = ["brave", "borg", "borgmatic"]; //put this in a config file
     let mut suspend_ok: bool = false;
-    const MAX_TRIES: i32 = 10;
     const LOG_FILE: &str = "suspend-server.log";
-    let mut tries: i32 = 0;
+    let mut tries: u64 = 0;
 
     //config file
     let mut conf = config::ConfigFile::default(); //get the config
@@ -30,17 +29,20 @@ fn main() {
     log_file_pb.push(LOG_FILE);
     let log_file = log_file_pb.as_os_str();
 
-    println!("Log file = {:?}", log_file);
-
     if conf.programs_list.len() == 0{
         logger(log_file,"Error in config file - no programs to check");
         panic!("Error in config file - no programs to check");
     }
 
+    println!("programs = {}", conf.programs_list);
+    println!("Log file = {:?}", log_file);
+    println!("Max tries = {}",conf.max_tries);
+    println!("delay = {}",conf.delay);
+
     let progs_iter = conf.programs_list.split(","); //get iterator for programs to check
     let progs = progs_iter.collect::<Vec<_>>();
     //println!("progs = {:?}", progs);
-    while (tries < MAX_TRIES) && !suspend_ok{
+    while (tries < conf.max_tries) && !suspend_ok{
         tries += 1;
         suspend_ok=true;
         for prog in progs.iter(){
@@ -57,7 +59,7 @@ fn main() {
                 println!("{} is running, can't suspend", prog);
                 suspend_ok = false;
                 //sleep for 15 mins
-                let duration = time::Duration::from_secs(900); //wait 15 mins
+                let duration = time::Duration::from_secs(conf.delay); //wait 15 mins
                 thread::sleep(duration);
                 break;
             }

@@ -8,6 +8,8 @@ use std::string::String;
 pub struct ConfigFile{
     pub programs_list: String,
     pub log_path: String,
+    pub delay: u64,
+    pub max_tries: u64
 }
 
 impl ConfigFile{
@@ -20,12 +22,18 @@ impl ConfigFile{
         let lines = contents.split("\n");
         for line in lines{
             if line.starts_with("programs ="){
-                self.programs_list = ConfigFile::get_value_from_line(line)?.to_string();
+                self.programs_list = ConfigFile::get_str_value_from_line(line)?.to_string();
             }
             else if line.starts_with("log path ="){
-                self.log_path = ConfigFile::get_value_from_line(line)?.to_string().trim().parse().unwrap();
+                self.log_path = ConfigFile::get_str_value_from_line(line)?.to_string().trim().parse().unwrap();
             }
-            else {
+            else if line.starts_with("max tries ="){
+                self.max_tries = ConfigFile::get_u64_value_from_line(line)?;
+            }
+            else if line.starts_with("delay ="){
+                self.delay = ConfigFile::get_u64_value_from_line(line)?;
+            }
+            else if !line.starts_with("#") && line != "" {
                 return Err(format!("Found unrecognised config line: {}",line));
             }
         }
@@ -33,7 +41,17 @@ impl ConfigFile{
         Ok(())
     }
 
-    fn get_value_from_line(line: &str) -> Result<&str,&str>{
+    fn get_u64_value_from_line(line: &str) -> Result<u64,&str>{
+        let line_str_val = ConfigFile::get_str_value_from_line(line)?;
+        let val:u64;
+        match line_str_val.parse::<u64>(){
+            Ok(i) => val = i,
+            Err(..) => {return Err("Error parsing u64 value in config file");}
+        };
+        Ok(val)
+    }
+
+    fn get_str_value_from_line(line: &str) -> Result<&str,&str>{
         let mut conf_line_parts = line.split("=");
         if conf_line_parts.clone().count() != 2{  //Note clone() to make acopy as count would consume conf_line_parts iterator
             return Err("Bad config file: invalid format");
